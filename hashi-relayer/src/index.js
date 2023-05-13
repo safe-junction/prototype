@@ -29,17 +29,21 @@ const main = async () => {
       console.log('Processing', key, '...')
       const { to, toChainId, data, messageId, from } = event.decode(event.data, event.topics)
 
-      const tx = await yaru.executeMessages(
-        [[to, toChainId, data]],
-        [BigNumber(messageId).toNumber()],
-        [from],
-        ['0x51AeceC718e98FdFc3a3c03D1Ab41bc842147DC3'], // NOTE: hardcoding (for simplicity) the adapters since they are not present in the event above
-        {
-          gasPrice: 280e9,
-          gasLimit: 700000
-        }
-      )
-      await tx.wait(1)
+      try {
+        const tx = await yaru.executeMessages(
+          [[to, toChainId, data]],
+          [BigNumber(messageId).toNumber()],
+          [from],
+          ['0x51AeceC718e98FdFc3a3c03D1Ab41bc842147DC3'], // NOTE: hardcoding (for simplicity) the adapters since they are not present in the event above
+          {
+            gasPrice: 280e9,
+            gasLimit: 700000
+          }
+        )
+        await tx.wait(1)
+      } catch(_err) {
+        console.error(_err)
+      }
 
       Cache[transactionHash + '-' + logIndex] = true
     }

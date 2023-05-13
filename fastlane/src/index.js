@@ -22,24 +22,28 @@ const main = async () => {
     console.log('Looking for events ...')
     const events = await sjDispatcher.queryFilter(sjDispatcher.filters.SJErc20Transfer())
 
-    for (const { transactionHash, logIndex, args, } of events) {
+    for (const { transactionHash, logIndex, args } of events) {
       const key = transactionHash + '-' + logIndex
       if (Cache[key]) continue
 
       console.log('Processing', key, '...')
-      const [messageId,, sourceTokenAddress, sourceTokenSymbol, sourceTokenAmount, recipient] = args
+      const [messageId, , sourceTokenAddress, sourceTokenSymbol, sourceTokenAmount, recipient] = args
 
-      const tx = await sjReceiver.advanceMessage(
-        messageId,
-        sourceTokenAddress,
-        sourceTokenSymbol,
-        sourceTokenAmount,
-        recipient,
-        {
-          gasPrice: 280e9
-        }
-      )
-      await tx.wait(1)
+      try {
+        const tx = await sjReceiver.advanceMessage(
+          messageId,
+          sourceTokenAddress,
+          sourceTokenSymbol,
+          sourceTokenAmount,
+          recipient,
+          {
+            gasPrice: 280e9
+          }
+        )
+        await tx.wait(1)
+      } catch (_err) {
+        console.error(_err)
+      }
 
       Cache[transactionHash + '-' + logIndex] = true
     }

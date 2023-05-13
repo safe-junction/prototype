@@ -40,11 +40,15 @@ const main = async () => {
       const messageHash = await yaho.hashes(messageId)
       const adapter = new ethers.Contract(adapterAddress, DummyAdapterAbi, signer)
 
-      console.log('Storing the message ...')
-      const tx = await adapter.storeMessage(sourceChainId, messageId, messageHash, {
-        gasPrice: 250e9
-      })
-      await tx.wait(1)
+      try {
+        console.log('Storing the message ...')
+        const tx = await adapter.storeMessage(sourceChainId, messageId, messageHash, {
+          gasPrice: 250e9
+        })
+        await tx.wait(1)
+      } catch (_err) {
+        console.error(_err)
+      }
 
       Cache[transactionHash + '-' + logIndex] = true
     }
