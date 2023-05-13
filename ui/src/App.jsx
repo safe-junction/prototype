@@ -51,9 +51,9 @@ const Input = styled.input`
 `
 
 const Title = styled.span`
-  margin-top: 100px;
   font-size: 50px;
   font-weight: 700;
+  margin-left: 20px;
 `
 
 const StepContent = styled.div`
@@ -113,30 +113,44 @@ const App = () => {
     <Global>
       <Navbar bg="light" variant="light">
         <Container className="d-flex justify-content-between">
-          <Navbar.Brand href="#home">
-            <img src="./assets/logo.png" style={{ height: 50, width: 50 }} alt="logo" />
-          </Navbar.Brand>
+          <Navbar.Brand href="#home"></Navbar.Brand>
           <ConnectButton />
         </Container>
       </Navbar>
 
       <Container>
         <Row>
-          <Col className="d-flex align-items-center justify-content-center">
+          <Col className="d-flex align-items-center justify-content-center" style={{ marginTop: 50 }}>
+            <img src="./assets/logo.png" style={{ height: 50, width: 50 }} alt="logo" />
             <Title>SAFE JUNCTION</Title>
           </Col>
         </Row>
-        <Row style={{ marginTop: 170 }}>
-          <Col className="d-flex align-items-center justify-content-center">
-            Wrap&nbsp;<span style={{ fontWeight: 'bold' }}>xDAI</span>{' '}
-            <img src="./assets/xdai.png" style={{ height: 30, width: 30, marginLeft: 5, marginRight: 5 }} alt="xdai" />{' '}
-            on Gnosis Chain into sjDAI on Polygon
+        <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 150 }}>
+          <Col xs={12} md={6}>
+            <Row>
+              <Col xs={5}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <img src="./assets/dai.png" height={50} width={50} alt="dai" />
+                  <span style={{ marginTop: 5 }}>xDAI on Gnosis</span>
+                </div>
+              </Col>
+              <Col xs={2} className="d-flex align-items-center justify-content-center">
+                <img src="./assets/arrow-right.png" height={35} width={35} alt="arrow" />
+              </Col>
+              <Col xs={5}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <img src="./assets/_dai.png" height={50} width={50} alt="_dai"/>
+                  <span style={{ marginTop: 5 }}>*DAI on Polygon</span>
+                </div>
+              </Col>
+            </Row>
           </Col>
         </Row>
-        <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 30 }}>
+
+        <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 100 }}>
           <Col xs={12} lg={5}>
             <Input type="number" value={amount} onChange={(_e) => setAmount(_e.target.value)} />
-            <StyledButton onClick={() => wrap?.()}>Wrap</StyledButton>
+            <StyledButton onClick={() => wrap?.()}>Send crosschain</StyledButton>
           </Col>
         </Row>
 
