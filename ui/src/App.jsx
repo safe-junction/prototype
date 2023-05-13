@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Container, Row, Col, Navbar } from 'react-bootstrap'
 import styled from 'styled-components'
-import { useAccount, useContractWrite, useWaitForTransaction, usePrepareContractWrite } from 'wagmi'
+import { useAccount, useContractWrite, usePrepareContractWrite, useContractEvent } from 'wagmi'
 import { gnosis, polygon } from 'wagmi/chains'
 import BigNumber from 'bignumber.js'
+import { ProgressBar, Step } from 'react-step-progress-bar'
 
 import SJERC20VaultAbi from './utils/SJERC20VaultAbi.json'
+import SJReceiverAbi from './utils/SJReceiverAbi.json'
 import { toastifyTransaction } from './utils'
 
 const Global = styled.div`
@@ -54,12 +56,31 @@ const Title = styled.span`
   font-weight: 700;
 `
 
+const StepContent = styled.div`
+  color: white;
+  width: 20px;
+  height: 20px;
+  background-color: ${({ accomplished }) => (accomplished ? 'rgb(9 112 228)' : 'rgba(211, 211, 211, 0.8)')};
+  border-radius: 50%;
+`
+
 const App = () => {
+  const [status, setStatus] = useState(0)
   const [amount, setAmount] = useState('0')
+
   const { address } = useAccount()
 
+  useContractEvent({
+    address: '0xC6870E36dC1b0b835fDDe33bC080156EeD9F2e0C',
+    abi: SJReceiverAbi,
+    eventName: 'AdvanceMessageProcessed',
+    listener(log) {
+      setStatus(3)
+    }
+  })
+
   const { config: wrapConfig } = usePrepareContractWrite({
-    address: '0x4EacA60eB19C0A32d8Bd9E6AE8Bded374611eBb6',
+    address: '0xC7c9A6572024eB7b191070D78bb5F5FCa7eA4458',
     abi: SJERC20VaultAbi,
     functionName: 'wrap',
     args: [
@@ -74,18 +95,19 @@ const App = () => {
     chainId: gnosis.id
   })
 
-  const { write: wrap, error: wrapError, data: wrapData } = useContractWrite(wrapConfig)
+  const { write: wrap, data: wrapData } = useContractWrite(wrapConfig)
 
   useEffect(() => {
     if (wrapData) {
-      toastifyTransaction(wrapData)
+      toastifyTransaction(wrapData, () => {
+        setStatus(1)
+
+        setTimeout(() => {
+          setStatus(2)
+        }, 1000 * 5)
+      })
     }
   }, [wrapData])
-
-  const { isLoading: isWrapping } = useWaitForTransaction({
-    hash: wrapData?.hash,
-    confirmations: 1
-  })
 
   return (
     <Global>
@@ -104,10 +126,52 @@ const App = () => {
             <Title>SAFE JUNCTION</Title>
           </Col>
         </Row>
-        <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 200 }}>
+        <Row style={{ marginTop: 170 }}>
+          <Col className="d-flex align-items-center justify-content-center">
+            Wrap&nbsp;<span style={{ fontWeight: 'bold' }}>xDAI</span>{' '}
+            <img src="./assets/xdai.png" style={{ height: 30, width: 30, marginLeft: 5, marginRight: 5 }} alt="xdai" />{' '}
+            on Gnosis Chain into sjDAI on Polygon
+          </Col>
+        </Row>
+        <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 30 }}>
           <Col xs={12} lg={5}>
             <Input type="number" value={amount} onChange={(_e) => setAmount(_e.target.value)} />
             <StyledButton onClick={() => wrap?.()}>Wrap</StyledButton>
+          </Col>
+        </Row>
+
+        <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 30 }}>
+          <Col xs={12} lg={5}>
+            <ProgressBar
+              percent={status === 0 ? 0 : status === 1 ? 33 : status === 2 ? 66 : 100}
+              hasStepZero={true}
+              stepPositions={[0, 33, 66, 100]}
+            >
+              <Step transition="scale">
+                {({ accomplished }) => <StepContent accomplished={accomplished}></StepContent>}
+              </Step>
+              <Step transition="scale">
+                {({ accomplished }) => <StepContent accomplished={accomplished}></StepContent>}
+              </Step>
+              <Step transition="scale">
+                {({ accomplished }) => <StepContent accomplished={accomplished}></StepContent>}
+              </Step>
+              <Step transition="scale">
+                {({ accomplished }) => <StepContent accomplished={accomplished}></StepContent>}
+              </Step>
+            </ProgressBar>
+          </Col>
+        </Row>
+
+        <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 20 }}>
+          <Col xs={12} lg={5} className="text-center">
+            {status > 0 && (
+              <span>
+                {status === 1 && 'Transaction confirmed. Waiting for finality ...'}
+                {status === 2 && 'Waiting for cross chain event propagation ...'}
+                {status === 3 && 'Fast lane detected!'}
+              </span>
+            )}
           </Col>
         </Row>
       </Container>

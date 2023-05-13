@@ -16,6 +16,7 @@ import App from './App'
 import '@rainbow-me/rainbowkit/styles.css'
 import 'react-toastify/dist/ReactToastify.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-step-progress-bar/styles.css'
 
 window.Buffer = window.Buffer || require('buffer').Buffer
 
