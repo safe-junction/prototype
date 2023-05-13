@@ -25,10 +25,21 @@ contract SJReceiver {
         sjDispatcher = sjDispatcher_;
     }
 
-    function onMessage(uint256 chainId, address sender, address receiver, bytes calldata data) external onlyYaru {
+    function onMessage(
+        uint256 sourceChainId,
+        address sender,
+        address sourceToken,
+        string calldata sourceTokenSymbol,
+        bytes calldata data
+    ) external onlyYaru {
         if (sender != sjDispatcher) {
             revert NotSJDispatcher();
         }
+
+        // FIXME: this is just a naive router implementation. Real one should be based on sourceToken and sourceSymbol
+        // Moreover instead of calling directly the token (receiver in this case) we should use a Router contract
+        // which will have the permission to mint the sjTokens
+        address receiver = 0x22401aebBb8Fb4EF022CD0B3ff9638a86E38F949;
 
         (bool success, ) = address(receiver).call(data);
         if (!success) revert CallFailed();

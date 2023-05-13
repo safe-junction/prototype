@@ -25,18 +25,12 @@ const main = async () => {
     const { to, toChainId, data, messageId, from } = event.decode(event.data, event.topics)
 
     const tx = await yaru.executeMessages(
-      [
-        [
-          to,
-          toChainId,
-          data,
-        ],
-      ],
+      [[to, toChainId, data]],
       [BigNumber(messageId).toNumber()],
       [from],
-      ["0x51AeceC718e98FdFc3a3c03D1Ab41bc842147DC3"], // NOTE: hardcoding (for simplicity) the adapters since they are not present in the event above 
+      ['0x51AeceC718e98FdFc3a3c03D1Ab41bc842147DC3'], // NOTE: hardcoding (for simplicity) the adapters since they are not present in the event above
       {
-        gasPrice: 250e9,
+        gasPrice: 280e9,
         gasLimit: 700000
       }
     )
