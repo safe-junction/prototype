@@ -5,7 +5,8 @@ const BigNumber = require('bignumber.js')
 
 const YaruAbi = require('./utils/YaruAbi.json')
 const YahoAbi = require('./utils/YahoAbi.json')
-const Cache = require('../cache.json')
+
+const sleep = (_ms) => new Promise((_resolve) => setTimeout(() => _resolve(), _ms))
 
 const main = async () => {
   const sourceProvider = new ethers.providers.JsonRpcProvider(process.env.SOURCE_NODE)
@@ -15,31 +16,37 @@ const main = async () => {
   const yaho = new ethers.Contract(process.env.YAHO_ADDRESS, YahoAbi, sourceProvider)
   const yaru = new ethers.Contract(process.env.YARU_ADDRESS, YaruAbi, signer)
 
-  const events = await yaho.queryFilter(yaho.filters.MessageDispatched())
+  while (true) {
+    const Cache = require('../cache.json')
 
-  for (const { transactionHash, logIndex, ...event } of events) {
-    const key = transactionHash + '-' + logIndex
-    if (Cache[key]) continue
+    console.log('Looking for events ...')
+    const events = await yaho.queryFilter(yaho.filters.MessageDispatched())
+    
+    for (const { transactionHash, logIndex, ...event } of events) {
+      const key = transactionHash + '-' + logIndex
+      if (Cache[key]) continue
 
-    console.log('Processing', key, '...')
-    const { to, toChainId, data, messageId, from } = event.decode(event.data, event.topics)
+      console.log('Processing', key, '...')
+      const { to, toChainId, data, messageId, from } = event.decode(event.data, event.topics)
 
-    const tx = await yaru.executeMessages(
-      [[to, toChainId, data]],
-      [BigNumber(messageId).toNumber()],
-      [from],
-      ['0x51AeceC718e98FdFc3a3c03D1Ab41bc842147DC3'], // NOTE: hardcoding (for simplicity) the adapters since they are not present in the event above
-      {
-        gasPrice: 280e9,
-        gasLimit: 700000
-      }
-    )
-    await tx.wait(1)
+      const tx = await yaru.executeMessages(
+        [[to, toChainId, data]],
+        [BigNumber(messageId).toNumber()],
+        [from],
+        ['0x51AeceC718e98FdFc3a3c03D1Ab41bc842147DC3'], // NOTE: hardcoding (for simplicity) the adapters since they are not present in the event above
+        {
+          gasPrice: 280e9,
+          gasLimit: 700000
+        }
+      )
+      await tx.wait(1)
 
-    Cache[transactionHash + '-' + logIndex] = true
+      Cache[transactionHash + '-' + logIndex] = true
+    }
+
+    fs.writeFileSync('cache.json', JSON.stringify(Cache))
+    await sleep(1000 * 30)
   }
-
-  fs.writeFileSync('cache.json', JSON.stringify(Cache))
 }
 
 main()
