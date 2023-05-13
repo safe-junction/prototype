@@ -152,17 +152,20 @@ const App = () => {
         <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 100 }}>
           <Col xs={12} lg={5}>
             <Input type="number" value={amount} onChange={(_e) => setAmount(_e.target.value)} />
-            <StyledButton onClick={() => wrap?.()}>Send crosschain</StyledButton>
+            <StyledButton onClick={() => wrap?.()}>Send cross-chain</StyledButton>
           </Col>
         </Row>
 
         <Row className="d-flex align-items-center justify-content-center" style={{ marginTop: 30 }}>
           <Col xs={12} lg={5}>
             <ProgressBar
-              percent={status === 0 ? 0 : status === 1 ? 33 : status === 2 ? 66 : 100}
+              percent={status === 0 ? 0 : status === 1 ? 25 : status === 2 ? 50 : 100}
               hasStepZero={true}
-              stepPositions={[0, 33, 66, 100]}
+              stepPositions={[0, 25, 50, 75, 100]}
             >
+              <Step transition="scale">
+                {({ accomplished }) => <StepContent accomplished={accomplished}></StepContent>}
+              </Step>
               <Step transition="scale">
                 {({ accomplished }) => <StepContent accomplished={accomplished}></StepContent>}
               </Step>
@@ -185,7 +188,7 @@ const App = () => {
               <span>
                 {status === 1 && 'Transaction confirmed. Waiting for finality ...'}
                 {status === 2 && 'Waiting for cross chain event propagation ...'}
-                {status === 3 && 'Fast lane detected!'}
+                {status === 3 && '🎉 The Fast Lane did its magic! Process completed. 🎉'}
               </span>
             )}
           </Col>
