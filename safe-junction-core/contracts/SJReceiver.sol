@@ -17,6 +17,23 @@ contract SJReceiver {
     mapping(bytes32 => address) fastlaneExecutor;
     mapping(bytes32 => bool) alreadyExecuted;
 
+    event AdvanceMessageProcessed(
+        bytes32 messageId,
+        address sourceToken,
+        string sourceTokenSymbol,
+        uint256 sourceTokenAmount,
+        address recipient,
+        address sender
+    );
+
+    event MessageProcessed(
+        bytes32 messageId,
+        address sourceToken,
+        string sourceTokenSymbol,
+        uint256 sourceTokenAmount,
+        address recipient
+    );
+
     modifier onlyYaru() {
         if (msg.sender != yaru) {
             revert NotYaru();
@@ -41,12 +58,14 @@ contract SJReceiver {
         if ((fastlaneExecutor[msgHash] != address(0x0)) || (alreadyExecuted[msgHash])) revert AlreadyProcessed();
 
         // address sjToken = create2Derivation(sourceChainId, sourceToken, sourceTokenSymbol);
-        address sjToken = 0x74FEAa557673FA31f5eb08449E11AC4464f592D0;
+        address sjToken = 0x05cac046134f9BdeCF9C35704118F5B98d967B2a;
 
         uint256 bpsFee = 10; //FIXME
         ISJToken(sjToken).transferFrom(msg.sender, recipient, (sourceTokenAmount * (10000 - bpsFee)) / 10000);
 
         fastlaneExecutor[msgHash] = msg.sender;
+
+        emit AdvanceMessageProcessed(messageId, sourceToken, sourceTokenSymbol, sourceTokenAmount, recipient, msg.sender);
     }
 
     function onMessage(
@@ -74,10 +93,12 @@ contract SJReceiver {
         // Moreover instead of calling directly the token (receiver in this case) we should use a Router contract
         // which will have the permission to mint the sjTokens
         // address sjToken = create2Derivation(sourceChainId, sourceToken, sourceTokenSymbol);
-        address sjToken = 0x74FEAa557673FA31f5eb08449E11AC4464f592D0;
+        address sjToken = 0x05cac046134f9BdeCF9C35704118F5B98d967B2a;
 
         ISJToken(sjToken).mint(recipient, sourceTokenAmount);
 
         alreadyExecuted[msgHash] = true;
+
+        emit MessageProcessed(messageId, sourceToken, sourceTokenSymbol, sourceTokenAmount, recipient); 
     }
 }
