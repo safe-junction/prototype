@@ -4,7 +4,7 @@ const main = async () => {
   const Governance = await ethers.getContractFactory('Governance')
   const governance = await Governance.deploy()
   console.log('Governance deployed at:', governance.address)
-  // 0x2170f277747946B91361f92035eaF8cFa0D5690D
+  // 0x329Cbe2a5548602a4Ba5801a306349D10d47D550
 }
 
 main()

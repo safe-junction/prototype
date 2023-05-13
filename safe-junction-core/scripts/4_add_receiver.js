@@ -1,8 +1,9 @@
 const { ethers } = require('hardhat')
 
-const DISPATCHER = '0xE29C46eFE782fD348420DBF081e5182c1198a901'
-const RECEIVER = '0x7D35bb6677E950d9d4929eb88d3D49c6fb09E342'
+const DISPATCHER = '0x9F79E6c35b78a353cB57aACD226cc08f19a69cDA'
+const RECEIVER = '0xA1aC899a0e4736948ea79fD4556405A1D94EAa92'
 
+// gnosis
 const main = async () => {
   const SJDispatcher = await ethers.getContractFactory('SJDispatcher')
   const sjDispatcher = await SJDispatcher.attach(DISPATCHER)

@@ -11,6 +11,6 @@ contract Governance {
     }
 
     function addDestinationAdapter(address adapter) external {
-        sourceAdapters.push(adapter);
+        destinationAdapters.push(adapter);
     }
 }

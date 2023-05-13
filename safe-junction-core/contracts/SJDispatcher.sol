@@ -5,7 +5,7 @@ import {IYaho} from "./interfaces/hashi/IYaho.sol";
 import {Message} from "./interfaces/hashi/IMessage.sol";
 import {IGovernance} from "./interfaces/IGovernance.sol";
 
-contract SJDispatcher is Ownable{
+contract SJDispatcher is Ownable {
     address public yaho;
     address public governance;
     address public sjReceiver;
@@ -13,23 +13,31 @@ contract SJDispatcher is Ownable{
     constructor(address yaho_, address governance_) {
         yaho = yaho_;
         governance = governance_;
-        
     }
 
     function dispatch(address to, uint256 chainId, bytes calldata data) external {
-        bytes memory sjData = abi.encodeWithSignature("onMessage(bytes)", abi.encodePacked(chainId, address(this), to, data));
+        bytes memory sjData = abi.encodeWithSignature(
+            "onMessage(bytes)",
+            abi.encodePacked(chainId, address(this), to, data)
+        );
 
         Message[] memory messages = new Message[](1);
         messages[0] = Message(sjReceiver, chainId, sjData);
 
+        address[] memory sadapters = new address[](1);
+        sadapters[0] = 0x5528EcB4C7a3870aF6808646163C551Ea3F3B751;
+
+        address[] memory dadapters = new address[](1);
+        dadapters[0] = 0x51AeceC718e98FdFc3a3c03D1Ab41bc842147DC3;
+
         IYaho(yaho).dispatchMessagesToAdapters(
             messages,
-            IGovernance(governance).sourceAdapters(),
-            IGovernance(governance).destinationAdapters()
+            sadapters, //IGovernance(governance).sourceAdapters(),
+            dadapters //IGovernance(governance).destinationAdapters()
         );
     }
 
-    function setSjReceiver(address sjReceiver_) external onlyOwner{
+    function setSjReceiver(address sjReceiver_) external onlyOwner {
         sjReceiver = sjReceiver_;
     }
 }
