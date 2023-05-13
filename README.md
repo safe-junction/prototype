@@ -1,24 +1,29 @@
 # Safe Junction - TBD?
 
+⚠️ The code is currently in the development phase and is not yet ready for production
+
 ## Overview
 
-Safe Junction is a protocol designed to facilitate secure crosschain bridging of assets. Rather than being a bridge itself, Safe Junction leverages the functionality of existing bridges, using them as oracles to verify and carry out crosschain operations as instructed by users on different blockchains. 
+Safe Junction is an innovative protocol designed to facilitate seamless and secure cross-chain bridging of digital assets.
 
-This repository contains the first prototype of Safe Junction, which was implemented at the ETHGlobal Lisbon hackathon. While the protocol is fundamentally blockchain agnostic, this implementation is designed for EVM blockchains and is built on top of the Hashi EVM Hash Oracle aggregator. 
+Unlike traditional bridging solutions, Safe Junction leverages the functionality of existing bridges, using them as oracles to authenticate, verify and execute cross-chain operations as instructed by users on different blockchains. 
 
-The system is designed to reach majority consensus on a user's operation using multiple oracles. The speed of the system is equivalent to the speed of the slowest oracle in the network. However, the fastlane functionality allows for much greater speed, enabling market makers to pre-process crosschain operations, advancing their liquidity in response to a user request, and then securely reclaiming the liquidity (plus a service fee) once all oracles have processed the crosschain request at their standard speed.
+This repository contains the first prototype of Safe Junction, which was designed and implemented at the ETHGlobal Lisbon hackathon. While the protocol is fundamentally blockchain agnostic, this specific implementation has been designed for EVM blockchains and is built on top of the Hashi EVM Hash Oracle aggregator. 
+
+The system is designed to reach a majority consensus on a user's operation, using multiple oracles to verify the validity of cross-chain instructions.
+
+The speed of the system is equivalent to the speed of the slowest oracle in the network. However, the innovative fastlane functionality overcomes this drawback and enables much higher speed: market makers can pre-process cross-chain trades, provide their liquidity in response to a user request, and then securely reclaim the liquidity (plus a service fee) once all oracles have processed the cross-chain request at their standard speed.
 
 ## Components
 
-This repository comprises several components:
+This repository includes several components:
 
-1. Core Safe Junction protocol smart contracts for EVM: These contracts form the heart of the Safe Junction protocol on EVM blockchains.
+1. Core Safe Junction protocol smart contracts for EVM: These contracts form the core of the Safe Junction protocol on EVM blockchains.
 
-2. Dummy oracle: This gets used to simplify our testing needs of Hashi during the hackathon.
+2. Dummy oracle: This is used to facilitate testing of Hashi during the hackathon.
 
-3. Offchain node agent: This agent is responsible for executing the correct dispatch(commit)/reveal calls of Safe Junction.
+3. Offchain node agent: This agent handles the correct execution of valid Safe Junction commit/reveal calls.
 
-4. Fastlane smart contracts: These contracts facilitate the fastlane functionality.
+4. Fastlane smart contracts: These contracts enable the fastlane functionality.
 
-5. Offchain python agent for Fastlane: This agent enables market makers to operate the Fastlane.
-
+5. Off-chain Python agent for Fastlane: This agent enables market makers to use the Fastlane feature.
