@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import { configureChains, createClient, WagmiConfig, createStorage } from 'wagmi'
 import { polygon, gnosis } from 'wagmi/chains'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 import { ToastContainer } from 'react-toastify'
@@ -24,7 +23,7 @@ const { chains, provider } = configureChains(
   [gnosis, polygon],
   [
     jsonRpcProvider({ rpc: () => ({ http: 'https://rpc.ankr.com/gnosis' }) }),
-    alchemyProvider({ apiKey: process.env.REACT_APP_ALCHEMY_ID }),
+    jsonRpcProvider({ rpc: () => ({ http: process.env.REACT_APP_POLYGON_NODE }) }),
     publicProvider()
   ]
 )

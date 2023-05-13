@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Container, Row, Col, Navbar } from 'react-bootstrap'
 import styled from 'styled-components'
-import { useAccount, useContractWrite, usePrepareContractWrite, useContractEvent } from 'wagmi'
+import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { gnosis, polygon } from 'wagmi/chains'
 import BigNumber from 'bignumber.js'
 import { ProgressBar, Step } from 'react-step-progress-bar'
+import { ethers } from 'ethers'
 
 import SJERC20VaultAbi from './utils/SJERC20VaultAbi.json'
 import SJReceiverAbi from './utils/SJReceiverAbi.json'
@@ -70,15 +71,15 @@ const App = () => {
 
   const { address } = useAccount()
 
-  useContractEvent({
-    address: '0xC6870E36dC1b0b835fDDe33bC080156EeD9F2e0C',
-    abi: SJReceiverAbi,
-    eventName: 'AdvanceMessageProcessed',
-    listener(log) {
+  useEffect(() => {
+    const provider = new ethers.providers.WebSocketProvider(process.env.REACT_APP_POLYGON_NODE, 137)
+    const receiver = new ethers.Contract('0xC6870E36dC1b0b835fDDe33bC080156EeD9F2e0C', SJReceiverAbi, provider)
+    receiver.on('AdvanceMessageProcessed', () => {
       setStatus(3)
-    },
-    chainId: polygon.id
-  })
+    })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const { config: wrapConfig } = usePrepareContractWrite({
     address: '0xC7c9A6572024eB7b191070D78bb5F5FCa7eA4458',
@@ -140,7 +141,7 @@ const App = () => {
               </Col>
               <Col xs={5}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img src="./assets/_dai.png" height={50} width={50} alt="_dai"/>
+                  <img src="./assets/_dai.png" height={50} width={50} alt="_dai" />
                   <span style={{ marginTop: 5 }}>*DAI on Polygon</span>
                 </div>
               </Col>
