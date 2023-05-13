@@ -5,10 +5,14 @@ import {IYaho} from "./interfaces/hashi/IYaho.sol";
 import {Message} from "./interfaces/hashi/IMessage.sol";
 import {IGovernance} from "./interfaces/IGovernance.sol";
 
+
+
 contract SJDispatcher is Ownable {
     address public yaho;
     address public governance;
     address public sjReceiver;
+
+    event SJErc20Transfer(bytes32, uint256, address, string, uint256, address);
 
     constructor(address yaho_, address governance_) {
         yaho = yaho_;
@@ -17,17 +21,21 @@ contract SJDispatcher is Ownable {
 
     function dispatch(
         uint256 destinationChainid,
-        bytes calldata data,
         address sourceToken,
-        string memory sourceTokenSymbol
+        string memory sourceTokenSymbol,
+        uint256 sourceTokenAmount,
+        address recipient
     ) external {
+        bytes32 messageId = keccak256(abi.encodePacked(blockhash(block.number-1), gasleft()));
         bytes memory sjData = abi.encodeWithSignature(
-            "onMessage(uint256,address,address,string,bytes)",
+            "onMessage(bytes32,uint256,address,address,string,uint256,address)",
+            messageId,
             block.chainid,
             address(this),
             sourceToken,
             sourceTokenSymbol,
-            data
+            sourceTokenAmount,
+            recipient
         );
 
         Message[] memory messages = new Message[](1);
@@ -44,6 +52,8 @@ contract SJDispatcher is Ownable {
             sadapters, //IGovernance(governance).sourceAdapters(),
             dadapters //IGovernance(governance).destinationAdapters()
         );
+
+        emit SJErc20Transfer(messageId, block.chainid, sourceToken, sourceTokenSymbol, sourceTokenAmount, recipient);
     }
 
     function setSjReceiver(address sjReceiver_) external onlyOwner {
