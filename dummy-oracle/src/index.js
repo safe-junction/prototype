@@ -32,15 +32,19 @@ const main = async () => {
 
     const messageId = BigNumber(request.slice(0, request.length - 40)).toNumber()
     const adapterAddress = '0x' + request.slice(request.length - 40, request.length)
-    const messageHash = await yaho.hashes(messageId)
-    console.log(messageId, messageHash)
 
+    // NOTE: this function should not be called here but it's an easy way to get the message hash given a message id 
+    //       but considering the time we have decided to use it
+    const messageHash = await yaho.hashes(messageId)
     const adapter = new ethers.Contract(adapterAddress, DummyAdapterAbi, signer)
 
     console.log('Storing the message ...')
-    await adapter.storeMessage(sourceChainId, messageId, messageHash)
+    const tx = await adapter.storeMessage(sourceChainId, messageId, messageHash, {
+      gasPrice: 250e9
+    })
+    await tx.wait(1)
 
-    // Cache[transactionHash + '-' + logIndex] = true
+    Cache[transactionHash + '-' + logIndex] = true
   }
 
   fs.writeFileSync('cache.json', JSON.stringify(Cache))

@@ -2,7 +2,6 @@
   "name": "oracle",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "compile": "npx hardhat compile",
     "contracts:lint-and-format": "prettier --write \"./contracts/**/*.+(sol)\" && solhint ./contracts --fix",
