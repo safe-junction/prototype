@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { Container, Row, Col, Navbar } from 'react-bootstrap'
 import styled from 'styled-components'
@@ -6,7 +7,7 @@ import { gnosis, polygon } from 'wagmi/chains'
 import BigNumber from 'bignumber.js'
 
 import SJERC20VaultAbi from './utils/SJERC20VaultAbi.json'
-import { useState } from 'react'
+import { toastifyTransaction } from './utils'
 
 const Global = styled.div`
   font-family: 'Montserrat', sans-serif;
@@ -74,6 +75,12 @@ const App = () => {
   })
 
   const { write: wrap, error: wrapError, data: wrapData } = useContractWrite(wrapConfig)
+
+  useEffect(() => {
+    if (wrapData) {
+      toastifyTransaction(wrapData)
+    }
+  }, [wrapData])
 
   const { isLoading: isWrapping } = useWaitForTransaction({
     hash: wrapData?.hash,

@@ -6,12 +6,15 @@ import { polygon, gnosis } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
+import { ToastContainer } from 'react-toastify'
+import styled from 'styled-components'
 
 import reportWebVitals from './reportWebVitals'
 
 import App from './App'
 
 import '@rainbow-me/rainbowkit/styles.css'
+import 'react-toastify/dist/ReactToastify.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 window.Buffer = window.Buffer || require('buffer').Buffer
@@ -38,12 +41,51 @@ const wagmiClient = createClient({
   provider
 })
 
+const StyledContainer = styled(ToastContainer)`
+  &&&.Toastify__toast-container {
+  }
+
+  .Toastify__toast {
+    border-radius: 100px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .Toastify__toast--success {
+    background-color: #4759654d !important;
+    color: white;
+  }
+
+  .Toastify__toast--error {
+    background-color: red !important;
+    color: white;
+  }
+
+  .Toastify__toast-body {
+  }
+
+  .Toastify__progress-bar {
+    display: none;
+  }
+
+  .Toastify__toast-icon {
+    & > svg {
+      fill: currentcolor;
+    }
+  }
+
+  button[aria-label='close'] {
+    opacity: 1;
+    color: white;
+  }
+`
+
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
         <App />
+        <StyledContainer position="bottom-right" autoClose={5000} />
       </RainbowKitProvider>
     </WagmiConfig>
   </React.StrictMode>
