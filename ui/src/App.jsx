@@ -76,7 +76,8 @@ const App = () => {
     eventName: 'AdvanceMessageProcessed',
     listener(log) {
       setStatus(3)
-    }
+    },
+    chainId: polygon.id
   })
 
   const { config: wrapConfig } = usePrepareContractWrite({
