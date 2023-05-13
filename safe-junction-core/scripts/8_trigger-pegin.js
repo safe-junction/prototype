@@ -1,7 +1,7 @@
 const { ethers } = require('hardhat')
 
 const WDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
-const SJ_ERC20_VAULT = '0x4EacA60eB19C0A32d8Bd9E6AE8Bded374611eBb6'
+const SJ_ERC20_VAULT = '0xC5910940e4163CCDe616D41EbCc847524A688957'
 const USER = '0xD7Ea6f8Bc70CaFfA68b08E60a7B116DBC93Ff395'
 
 const main = async () => {

@@ -5,8 +5,6 @@ import {IYaho} from "./interfaces/hashi/IYaho.sol";
 import {Message} from "./interfaces/hashi/IMessage.sol";
 import {IGovernance} from "./interfaces/IGovernance.sol";
 
-
-
 contract SJDispatcher is Ownable {
     address public yaho;
     address public governance;
@@ -26,7 +24,7 @@ contract SJDispatcher is Ownable {
         uint256 sourceTokenAmount,
         address recipient
     ) external {
-        bytes32 messageId = keccak256(abi.encodePacked(blockhash(block.number-1), gasleft()));
+        bytes32 messageId = keccak256(abi.encodePacked(blockhash(block.number - 1), gasleft()));
         bytes memory sjData = abi.encodeWithSignature(
             "onMessage(bytes32,uint256,address,address,string,uint256,address)",
             messageId,
