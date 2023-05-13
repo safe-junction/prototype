@@ -17,8 +17,11 @@ contract SJDispatcher is Ownable {
 
     function dispatch(address to, uint256 chainId, bytes calldata data) external {
         bytes memory sjData = abi.encodeWithSignature(
-            "onMessage(bytes)",
-            abi.encodePacked(chainId, address(this), to, data)
+            "onMessage(uint256,address,address,bytes)",
+            chainId,
+            address(this),
+            to,
+            data
         );
 
         Message[] memory messages = new Message[](1);

@@ -1,14 +1,14 @@
 const { ethers } = require('hardhat')
 
-const YARU = '0x8D860837dF520923d28Bf4Cf0A559a3d5C28901e'
-const DISPATCHER = '0x344b219599D8635c6f477a885b0464e91E3e3F64'
+const YARU = '0xfd4194F7715d8C49775beEa34ecc63d11297C746'
+const DISPATCHER = '0xaE12358d0747004CF06AA2B82AC15f07956763a4'
 
 // polygon
 const main = async () => {
   const SJReceiver = await ethers.getContractFactory('SJReceiver')
   const sjReceiver = await SJReceiver.deploy(YARU, DISPATCHER)
   console.log('SJReceiver deployed at:', sjReceiver.address)
-  // 0x927D22Bd5BDeAa3752312A31Bd3ab1d29ffEaDd4
+  // 0x29854b82a1a8E7857131aa934Cff93144f399228
 }
 
 main()

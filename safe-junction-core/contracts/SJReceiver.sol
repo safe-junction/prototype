@@ -25,17 +25,12 @@ contract SJReceiver {
         sjDispatcher = sjDispatcher_;
     }
 
-    function onMessage(bytes calldata message) external onlyYaru {
-        (uint256 chainId, address sender, address to, bytes memory data) = abi.decode(
-            message,
-            (uint256, address, address, bytes)
-        );
-
+    function onMessage(uint256 chainId, address sender, address receiver, bytes calldata data) external onlyYaru {
         if (sender != sjDispatcher) {
             revert NotSJDispatcher();
         }
 
-        (bool success, ) = address(to).call(data);
+        (bool success, ) = address(receiver).call(data);
         if (!success) revert CallFailed();
     }
 }

@@ -7,7 +7,7 @@ const main = async () => {
   const SJDispatcher = await ethers.getContractFactory('SJDispatcher')
   const sjDispatcher = await SJDispatcher.deploy(YAHO, GOVERNANCE)
   console.log('SJDispatcher deployed at:', sjDispatcher.address)
-  // 0x344b219599D8635c6f477a885b0464e91E3e3F64
+  // 0xaE12358d0747004CF06AA2B82AC15f07956763a4
 }
 
 main()

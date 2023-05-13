@@ -1,7 +1,7 @@
 const { ethers } = require('hardhat')
 
-const DISPATCHER = '0x344b219599D8635c6f477a885b0464e91E3e3F64'
-const RECEIVER = '0x927D22Bd5BDeAa3752312A31Bd3ab1d29ffEaDd4'
+const DISPATCHER = '0xaE12358d0747004CF06AA2B82AC15f07956763a4'
+const RECEIVER = '0x29854b82a1a8E7857131aa934Cff93144f399228'
 
 // gnosis
 const main = async () => {
